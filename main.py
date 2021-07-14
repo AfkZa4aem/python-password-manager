@@ -1,6 +1,24 @@
 from tkinter import *
-# ---------------------------- PASSWORD GENERATOR ------------------------------- #
+from tkinter import messagebox
+from random import randint, shuffle, sample
+import pyperclip
 
+
+# ---------------------------- PASSWORD GENERATOR ------------------------------- #
+def create_password():
+    password_entry.delete(0, END)
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+
+    char_list = [char for char in sample(letters, randint(8, 10))]
+    symb_list = [symb for symb in sample(symbols, randint(2, 4))]
+    num_list = [num for num in sample(numbers, randint(2, 4))]
+    password_list = char_list + symb_list + num_list
+    shuffle(password_list)
+    password = "".join(password_list)
+    password_entry.insert(0, password)
+    pyperclip.copy(password)
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
 
@@ -8,13 +26,24 @@ def save_password():
     web_site = web_entry.get()
     username = username_entry.get()
     password = password_entry.get()
-    with open("data.txt", mode="a") as file:
-        file.write(
-            f"\n{web_site} | {username} | {password}"
+    if len(web_site) == 0 or len(username) == 0 or len(password) == 0:
+        messagebox.showerror(
+            title="Error",
+            message="Please don't leave any fields empty"
         )
-    web_entry.delete(0, END)
-    username_entry.delete(0, END)
-    password_entry.delete(0, END)
+    else:
+        is_ok = messagebox.askokcancel(
+            title="Success",
+            message=f"These are your credentials: \nUsername: {username} \nPassword: {password} \nIs it ok to save?"
+        )
+        if is_ok:
+            with open("data.txt", mode="a") as file:
+                file.write(
+                    f"{web_site} | {username} | {password}\n"
+                )
+            web_entry.delete(0, END)
+            username_entry.delete(0, END)
+            password_entry.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -46,7 +75,7 @@ password_entry = Entry(width=33)
 password_entry.grid(column=1, row=3, sticky="W")
 
 # Buttons
-gen_button = Button(text="Generate Password")
+gen_button = Button(text="Generate Password", command=create_password)
 gen_button.grid(column=2, row=3, sticky="EW")
 add_button = Button(text="Add", width=30, command=save_password)
 add_button.grid(column=1, row=4, columnspan=2, sticky="EW")
