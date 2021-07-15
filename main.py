@@ -39,8 +39,21 @@ def save_password():
             message="Please don't leave any fields empty"
         )
     else:
-        with open("data.json", "w") as file:
-            json.dump(new_entry, file, indent=4)
+        try:
+            # check is the file exist
+            with open("data.json", "r") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            # create it if not
+            with open("data.json", "w") as file:
+                json.dump(new_entry, file, indent=4)
+        else:
+            # update or add new entry
+            data.update(new_entry)
+            with open("data.json", "w") as file:
+                json.dump(data, file, indent=4)
+        finally:
+            # clear all the GUI fields
             web_entry.delete(0, END)
             username_entry.delete(0, END)
             password_entry.delete(0, END)
