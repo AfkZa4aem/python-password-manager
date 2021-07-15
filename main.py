@@ -67,23 +67,24 @@ def search():
     try:
         with open("data.json", "r") as file:
             data = json.load(file)
-            if data[website]:
-                s_username = data[website]["username"]
-                s_password = data[website]["password"]
-                messagebox.showinfo(
-                    title=website,
-                    message=f"Username: {s_username}\nPassword: {s_password}"
-                )
-    except KeyError:
-        messagebox.showerror(
-            title="Error",
-            message=f"There is no information about {website}"
-        )
     except FileNotFoundError:
         messagebox.showerror(
             title="Error",
             message="There is no database found"
         )
+    else:
+        if data[website]:
+            s_username = data[website]["username"]
+            s_password = data[website]["password"]
+            messagebox.showinfo(
+                title=website,
+                message=f"Username: {s_username}\nPassword: {s_password}"
+            )
+        else:
+            messagebox.showerror(
+                title="Error",
+                message=f"No credentials for {website}"
+            )
 
 
 # ---------------------------- UI SETUP ------------------------------- #
