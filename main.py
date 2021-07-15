@@ -74,10 +74,15 @@ def search():
                     title=website,
                     message=f"Username: {s_username}\nPassword: {s_password}"
                 )
-    except KeyError or FileNotFoundError:
+    except KeyError:
         messagebox.showerror(
             title="Error",
-            message=f"THere is no information about {website}"
+            message=f"There is no information about {website}"
+        )
+    except FileNotFoundError:
+        messagebox.showerror(
+            title="Error",
+            message="There is no database found"
         )
 
 
